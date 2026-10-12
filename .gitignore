@@ -1,0 +1,51 @@
+# Root Git Ignore for Fitness App Microservices
+
+# Build outputs
+target/
+**/target/
+build/
+**/build/
+dist/
+**/dist/
+
+# Node & Frontend
+node_modules/
+**/node_modules/
+.eslintcache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment and Secrets
+.env
+.env.local
+.env.*.local
+*.env
+
+# IDE & Editors
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.settings/
+.project/
+.classpath/
+.factorypath
+.springBeans
+.sts4-cache
+
+# OS generated files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs & temp
+*.log
+logs/
+**/logs/
+tmp/
+temp/

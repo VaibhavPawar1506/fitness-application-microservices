@@ -39,14 +39,17 @@ public class ActivityAIService {
                     .get(0)
                     .path("text");
 
-            String jsonContent = textNode.asText()
-                    .replaceAll("```json\\n","")
-                    .replaceAll("\\n```", "")
-                    .trim();
+            String rawText = textNode.asText().trim();
+            // Robustly extract JSON object substring if model returned markdown fences or conversational text
+            if (rawText.contains("{") && rawText.contains("}")) {
+                int firstBrace = rawText.indexOf('{');
+                int lastBrace = rawText.lastIndexOf('}');
+                if (firstBrace != -1 && lastBrace > firstBrace) {
+                    rawText = rawText.substring(firstBrace, lastBrace + 1);
+                }
+            }
 
-//            log.info("PARSED RESPONSE FROM AI: {} ", jsonContent);
-
-            JsonNode analysisJson = mapper.readTree(jsonContent);
+            JsonNode analysisJson = mapper.readTree(rawText);
             JsonNode analysisNode = analysisJson.path("analysis");
             
             StringBuilder fullAnalysis = new StringBuilder();
@@ -71,7 +74,7 @@ public class ActivityAIService {
                     .build();
             
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Failed to parse AI response for activity {}: {}", activity.getId(), e.getMessage());
             return createDefaultRecommendation(activity);
         }
     }

@@ -1,8 +1,8 @@
 import { Box, Button, Typography } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "react-oauth2-code-pkce";
 import { useDispatch } from "react-redux";
-import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from "react-router";
+import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router";
 import { setCredentials } from "./store/authSlice";
 import ActivityForm from "./components/ActivityForm";
 import ActivityList from "./components/ActivityList";
@@ -10,20 +10,18 @@ import ActivityDetail from "./components/ActivityDetail";
 
 const ActvitiesPage = () => {
   return (<Box sx={{ p: 2, border: '1px dashed grey' }}>
-    <ActivityForm onActivitiesAdded = {() => window.location.reload()} />
+    <ActivityForm onActivityAdded = {() => window.location.reload()} />
     <ActivityList />
   </Box>);
 }
 
 function App() {
-  const { token, tokenData, logIn, logOut, isAuthenticated } = useContext(AuthContext);
+  const { token, tokenData, logIn, logOut } = useContext(AuthContext);
   const dispatch = useDispatch();
-  const [authReady, setAuthReady] = useState(false);
   
   useEffect(() => {
     if (token) {
       dispatch(setCredentials({token, user: tokenData}));
-      setAuthReady(true);
     }
   }, [token, tokenData, dispatch]);
 

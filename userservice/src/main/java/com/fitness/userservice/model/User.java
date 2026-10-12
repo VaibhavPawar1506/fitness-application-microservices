@@ -20,7 +20,7 @@ public class User {
 
     private String keycloakId;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String password;
     private String firstName;
     private String lastName;

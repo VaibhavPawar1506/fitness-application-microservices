@@ -23,7 +23,15 @@ public class KeycloakUserSyncFilter implements WebFilter {
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String token = exchange.getRequest().getHeaders().getFirst("Authorization");
         String userId = exchange.getRequest().getHeaders().getFirst("X-User-ID");
+
+        if (token == null || !token.startsWith("Bearer ")) {
+            return chain.filter(exchange);
+        }
+
         RegisterRequest registerRequest = getUserDetails(token);
+        if (registerRequest == null) {
+            return chain.filter(exchange);
+        }
 
         if (userId == null) {
             userId = registerRequest.getKeycloakId();
@@ -66,7 +74,6 @@ public class KeycloakUserSyncFilter implements WebFilter {
             RegisterRequest registerRequest = new RegisterRequest();
             registerRequest.setEmail(claims.getStringClaim("email"));
             registerRequest.setKeycloakId(claims.getStringClaim("sub"));
-            registerRequest.setPassword("dummy@123123");
             registerRequest.setFirstName(claims.getStringClaim("given_name"));
             registerRequest.setLastName(claims.getStringClaim("family_name"));
             return registerRequest;
